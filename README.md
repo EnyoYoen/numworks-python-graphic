@@ -7,3 +7,4 @@ This project has currently 3 python scripts:
  -gbutton.py
  -ginput.py
  -glayout.py
+File names are written in lower case because Epsilon does not support upper case in python script names.
