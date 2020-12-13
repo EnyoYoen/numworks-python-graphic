@@ -3,7 +3,7 @@ The purpose of this repository is to create a set of python files to make graphi
 
 To test the different scripts, it's a bit tricky because you have to import these scripts on the calculator from the NumWorks Workshop (https://workshop.numworks.com/).
 
-This project has currently 3 python scripts:\n
+This project has currently 3 python scripts:
  -gbutton.py
  -ginput.py
  -glayout.py
