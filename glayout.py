@@ -13,6 +13,8 @@ class GLayout:
     return self.self._widgetList
   def getWidgetDictionnary(self):
     return self._widgetDictionnary
+  def getWidgetListLen(self):
+    return self._widgetListLen
   def getActivateIndex(self):
     return self._activateWidgetIndex
   def getKey(self,key):
@@ -47,38 +49,44 @@ class GLayout:
     self._widgetList.remove(widget)
     self._widgetListLen-=1
   
-  def keyPressed(self, key):
+  def keyPressed(self, key=None):
     if self._widgetListLen!=0:
-      if key==self._executeKey:
-        if self._activateWidgetIndex!=None:
-          currentWidget=self._widgetList[self._activateWidgetIndex]
-          if type(currentWidget)==GButton or type(currentWidget)==GInput:
-            return(currentWidget.setClicked())
+      if key==None:
+        keys=[self._executeKey, self._deactivateKey, self._moveKey1, self._moveKey2]
+      else:
+        keys=[key]
 
-      if key==self._moveKey1 or key==self._moveKey2:
-        if self._activateWidgetIndex==None:
-          if key==self._moveKey1:
-            self._activateWidgetIndex=0
-          else:
-            self._activateWidgetIndex=self._widgetListLen-1
-        else:
-          self._setActivate(False)
-          if key==self._moveKey1:
-            if self._activateWidgetIndex==0:
-              self._activateWidgetIndex=self._widgetListLen-1
-            else:
-              self._activateWidgetIndex-=1
-          else:
-            if self._activateWidgetIndex==self._widgetListLen-1:
+      for key in keys:
+        if key==self._executeKey:
+          if self._activateWidgetIndex!=None:
+            currentWidget=self._widgetList[self._activateWidgetIndex]
+            if type(currentWidget)==GButton or type(currentWidget)==GInput:
+              return(currentWidget.setClicked())
+
+        if key==self._moveKey1 or key==self._moveKey2:
+          if self._activateWidgetIndex==None:
+            if key==self._moveKey1:
               self._activateWidgetIndex=0
             else:
-              self._activateWidgetIndex+=1
-      self._setActivate(True)
+              self._activateWidgetIndex=self._widgetListLen-1
+          else:
+            self._setActivate(False)
+            if key==self._moveKey1:
+              if self._activateWidgetIndex==0:
+                self._activateWidgetIndex=self._widgetListLen-1
+              else:
+                self._activateWidgetIndex-=1
+            else:
+              if self._activateWidgetIndex==self._widgetListLen-1:
+                self._activateWidgetIndex=0
+              else:
+                self._activateWidgetIndex+=1
+          self._setActivate(True)
 
-      if key==self._deactivateKey:
-        if self._activateWidgetIndex!=None:
-          self._setActivate(False)
-          self._activateWidgetIndex=None
+        if key==self._deactivateKey:
+          if self._activateWidgetIndex!=None:
+            self._setActivate(False)
+            self._activateWidgetIndex=None
 
   def _setActivate(self,state=True):
     if self._activateWidgetIndex!=None:
