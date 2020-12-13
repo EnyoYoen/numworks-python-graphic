@@ -90,33 +90,3 @@ class GLayout:
     for i in range(start,end):
       if not(i in notDisplay):
         self._widgetList[i].display(state)
-
-from gbutton import GButton
-from ginput import GInput
-from time import *
-from snake import *
-from ion import *
-
-def helloWorld():
-  print("Hello World!")
-def test():
-  print("Test")
-
-bouton1=GButton(0,0,150,20,helloWorld,"Hello World!",1,(0,0,0),(0,0,255),(0,0,0))
-bouton2=GButton(0,30,150,20,go,"Snake",1,(0,0,0),(0,0,255),(0,0,0))
-bouton3=GButton(0,60,150,20,test,"Test",1,(0,0,0),(0,0,255),(0,0,0))
-inputBox=GInput(0,90,150,20)
-
-layout=GLayout()
-layout.addWidget(bouton1,"bouton1")
-layout.addWidget(bouton2,"bouton2")
-layout.addWidget(bouton3,"bouton3")
-layout.addWidget(inputBox,"inputBox")
-layout.display()
-
-key=[KEY_OK,KEY_UP,KEY_DOWN,KEY_HOME]
-while True:
-  for i in key:
-    if keydown(i):
-      layout.keyPressed(i)
-      sleep(0.2)
