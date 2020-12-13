@@ -88,13 +88,13 @@ class GLayout:
             self._setActivate(False)
             self._activateWidgetIndex=None
 
-  def _setActivate(self,state=True):
-    if self._activateWidgetIndex!=None:
-      self._widgetList[self._activateWidgetIndex].setActivate(state)
-
   def display(self,state=True,start=0,end=-1,notDisplay=[]):
     if end<0:
       end=self._widgetListLen
     for i in range(start,end):
       if not(i in notDisplay):
         self._widgetList[i].display(state)
+
+  def _setActivate(self,state=True):
+    if self._activateWidgetIndex!=None:
+      self._widgetList[self._activateWidgetIndex].setActivate(state)
