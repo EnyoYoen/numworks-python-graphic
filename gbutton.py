@@ -24,14 +24,7 @@ class GButton:
   def display(self,state=True):
     if self._displayState!=state or self._activate:
       if state:
-        fill_rect(self._x,self._y,self._width,self._borderWidth,self._borderColor)
-        fill_rect(self._x,self._y,self._borderWidth,self._height,self._borderColor)
-        fill_rect(self._x+self._width-self._borderWidth,self._y+self._borderWidth,self._borderWidth,self._height-self._borderWidth,self._borderColor)
-        fill_rect(self._x+self._borderWidth,self._y+self._height-self._borderWidth,self._width-self._borderWidth,self._borderWidth,self._borderColor)
-        
-        fill_rect(self._x+self._borderWidth,self._y+self._borderWidth,self._width-self._borderWidth*2,self._height-self._borderWidth*2,self._fillColor)
-        
-        draw_string(self._text,self._x+(self._width-self._widthText)//2,self._y+1+(self._height-self._heightText)//2,self._textColor,self._fillColor)
+        self._draw(self._borderColor, self._fillColor)
       else:
         fill_rect(self.x,self.y,self._width,self._height,(255,255,255))
       self._displayState=state
@@ -103,12 +96,7 @@ class GButton:
     
   def setActivate(self,state=True):
     if state:
-      fill_rect(self._x,self._y,self._width,self._borderWidth,self._activeBorderColor)
-      fill_rect(self._x,self._y,self._borderWidth,self._height,self._activeBorderColor)
-      fill_rect(self._x+self._width-self._borderWidth,self._y+self._borderWidth,self._borderWidth,self._height-self._borderWidth,self._activeBorderColor)
-      fill_rect(self._x+self._borderWidth,self._y+self._height-self._borderWidth,self._width-self._borderWidth,self._borderWidth,self._activeBorderColor)
-      fill_rect(self._x+self._borderWidth,self._y+self._borderWidth,self._width-self._borderWidth*2,self._height-self._borderWidth*2,self._activeFillColor)
-      draw_string(self._text,self._x+(self._width-self._widthText)//2,self._y+1+(self._height-self._heightText)//2,self._activeTextColor,self._activeFillColor)
+      self._draw(self._activeBorderColor,self._activeFillColor)
       self._activate=True
     else:
       self.display()
@@ -119,3 +107,10 @@ class GButton:
       if self._command!=None:
           self._command()
           return self._command
+
+  def _draw(self,borderColor,fillColor):
+    fill_rect(self._x,self._y,self._width,self._borderWidth,borderColor)
+    fill_rect(self._x,self._y,self._borderWidth,self._height,borderColor)
+    fill_rect(self._x+self._width-self._borderWidth,self._y+self._borderWidth,self._borderWidth,self._height-self._borderWidth,borderColor)
+    fill_rect(self._x+self._borderWidth,self._y+self._height-self._borderWidth,self._width-self._borderWidth,self._borderWidth,borderColor)
+    fill_rect(self._x+self._borderWidth,self._y+self._borderWidth,self._width-self._borderWidth*2,self._height-self._borderWidth*2,fillColor)
