@@ -1,98 +1,33 @@
 from kandinsky import fill_rect, draw_string
 from ion import keydown
 from time import sleep
+from gwidget import GWidget
 
-class GInput:
+class GInput(GWidget):
   def __init__(self,x,y,width,height,borderWidth=1,borderColor=(0,0,0),fillColor=(0,0,255),textColor=(0,0,0)):
-    self.setBorderWidth(borderWidth)
-    self.setWidth(width)
-    self.setHeight(height)
-    self.setX(x)
-    self.setY(y)
-    self.initActiveState()
+    super().__init__(x,y,width,height,borderWidth,borderColor,fillColor)
     self.initClickedState()
-
-    self._borderColor=borderColor
-    self._fillColor=fillColor
     self._textColor=textColor
-    self._displayState=False
     self._inputText=""
 
   def getInputText(self):
     return self._inputText
-  def getX(self):
-    return self._x
-  def getY(self):
-    return self._y
-  def getWidth(self):
-    return self._width
-  def getHeigt(self):
-    return self._height
-  def getBorderWidth(self):
-    return self._borderWidth
-
-  def setX(self, x):
-    if x>=0 and x<=(320-self._width):
-      self._x=x
-    else:
-      self._x=0
-  
-  def setY(self, y):
-    if y>=0 and y<=(222-self._height):
-      self._y=y
-    else:
-      self._y=0
-  
-  def setBorderWidth(self, borderWidth):
-    if borderWidth<1:
-      borderWidth=1
-    elif borderWidth>10:
-      borderWidth=10
-    self._borderWidth=borderWidth
-  
-  def setWidth(self, width):
-    if width<self._borderWidth*2:
-      width=self._borderWidth*2
-    self._width=width
 
   def setHeight(self, height):
     if height<20+self._borderWidth*2:
       height=20+self._borderWidth*2
     self._height=height
-  
-  def initActiveState(self,borderColor=(0,0,0),fillColor=(0,255,255),textColor=(0,0,0)):
-    self._activeBorderColor=borderColor
-    self._activeFillColor=fillColor
-    self._activeTextColor=textColor
-    self._activate=False
 
   def initClickedState(self,borderColor=(255,0,0),fillColor=(0,255,255),textColor=(0,0,0)):
     self._clickedBorderColor=borderColor
     self._clickedFillColor=fillColor
     self._clickedTextColor=textColor
-
-  def display(self,state=True):
-    if self._displayState!=state or self._activate:
-      if state:
-        self._draw(self._borderColor, self._fillColor)
-      else:
-        fill_rect(self.x,self.y,self._width,self._height,(255,255,255))
-      self._displayState=state
-
-  def setActivate(self,state=True):
-    if state!=self._activate:
-      if state:
-        self._draw(self._activeBorderColor,self._activeFillColor)
-        self._activate=True
-      else:
-        self.display()
-        self._activate=False
   
   def setClicked(self,state=True):
     if self._activate:
       sleep(0.15)
       self._activate=False
-      self._draw(self._clickedBorderColor,self._clickedFillColor)
+      self._draw(2)
       inputText=""
       numbers=[42,43,44,36,37,38,30,31,32]
       alpha=False
@@ -225,9 +160,13 @@ class GInput:
     self.setActivate()
     return(inputText)
 
-  def _draw(self,borderColor,fillColor):
-    fill_rect(self._x,self._y,self._width,self._borderWidth,borderColor)
-    fill_rect(self._x,self._y,self._borderWidth,self._height,borderColor)
-    fill_rect(self._x+self._width-self._borderWidth,self._y+self._borderWidth,self._borderWidth,self._height-self._borderWidth,borderColor)
-    fill_rect(self._x+self._borderWidth,self._y+self._height-self._borderWidth,self._width-self._borderWidth,self._borderWidth,borderColor)
-    fill_rect(self._x+self._borderWidth,self._y+self._borderWidth,self._width-self._borderWidth*2,self._height-self._borderWidth*2,fillColor)
+  def _draw(self,state):
+    if state in [0,1,2]: 
+      if state==2:
+        fill_rect(self._x,self._y,self._width,self._borderWidth,self._clickedBorderColor)
+        fill_rect(self._x,self._y,self._borderWidth,self._height,self._clickedBorderColor)
+        fill_rect(self._x+self._width-self._borderWidth,self._y+self._borderWidth,self._borderWidth,self._height-self._borderWidth,self._clickedBorderColor)
+        fill_rect(self._x+self._borderWidth,self._y+self._height-self._borderWidth,self._width-self._borderWidth,self._borderWidth,self._clickedBorderColor)
+        fill_rect(self._x+self._borderWidth,self._y+self._borderWidth,self._width-self._borderWidth*2,self._height-self._borderWidth*2,self._clickedFillColor)
+      else:
+        super()._draw(state)
