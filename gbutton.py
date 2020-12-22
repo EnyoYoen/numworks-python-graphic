@@ -13,28 +13,10 @@ class GButton:
     self.initActiveState()
 
     self._command=command
-    self._widthText=len(self._text)*10
-    self._heightText=20
     self._borderColor=borderColor
     self._fillColor=fillColor
     self._textColor=textColor
-    self._activateStateInit=False
     self._displayState=False
-
-  def display(self,state=True):
-    if self._displayState!=state or self._activate:
-      if state:
-        fill_rect(self._x,self._y,self._width,self._borderWidth,self._borderColor)
-        fill_rect(self._x,self._y,self._borderWidth,self._height,self._borderColor)
-        fill_rect(self._x+self._width-self._borderWidth,self._y+self._borderWidth,self._borderWidth,self._height-self._borderWidth,self._borderColor)
-        fill_rect(self._x+self._borderWidth,self._y+self._height-self._borderWidth,self._width-self._borderWidth,self._borderWidth,self._borderColor)
-        
-        fill_rect(self._x+self._borderWidth,self._y+self._borderWidth,self._width-self._borderWidth*2,self._height-self._borderWidth*2,self._fillColor)
-        
-        draw_string(self._text,self._x+(self._width-self._widthText)//2,self._y+1+(self._height-self._heightText)//2,self._textColor,self._fillColor)
-      else:
-        fill_rect(self.x,self.y,self._width,self._height,(255,255,255))
-      self._displayState=state
 
   def getText(self):
     return self._text
@@ -48,8 +30,8 @@ class GButton:
     return self._height
 
   def setText(self, text):
-    if self._width<len(text)*10+self._borderWidth:
-      l=floor((self._width-self._borderWidth)//10)-1
+    if self._width<len(text)*10+self._borderWidth*2:
+      l=floor((self._width-self._borderWidth)//10)
       self._text=text[0:l]
     else:
       self._text=text
@@ -80,11 +62,11 @@ class GButton:
 
   def setHeight(self, height):
     if self._text!="":
-      if height<20+borderWidth*2:
-        height=20+borderWidth*2
+      if height<20+self._borderWidth*2:
+        height=20+self._borderWidth*2
     else:
-      if height<borderWidth*2:
-        height=borderWidth*2
+      if height<self._borderWidth*2:
+        height=self._borderWidth*2
     self._height=height
 
   def _setHeight(self, height, text):
@@ -96,19 +78,23 @@ class GButton:
         height=self._borderWidth*2
     self._height=height
   
+  def display(self,state=True):
+    if self._displayState!=state or self._activate:
+      if state:
+        self._draw(self._borderColor, self._fillColor, self._textColor)
+      else:
+        fill_rect(self.x,self.y,self._width,self._height,(255,255,255))
+      self._displayState=state
+
   def initActiveState(self,borderColor=(0,0,0),fillColor=(0,255,255),textColor=(0,0,0)):
     self._activeBorderColor=borderColor
     self._activeFillColor=fillColor
     self._activeTextColor=textColor
+    self._activate=False
     
   def setActivate(self,state=True):
     if state:
-      fill_rect(self._x,self._y,self._width,self._borderWidth,self._activeBorderColor)
-      fill_rect(self._x,self._y,self._borderWidth,self._height,self._activeBorderColor)
-      fill_rect(self._x+self._width-self._borderWidth,self._y+self._borderWidth,self._borderWidth,self._height-self._borderWidth,self._activeBorderColor)
-      fill_rect(self._x+self._borderWidth,self._y+self._height-self._borderWidth,self._width-self._borderWidth,self._borderWidth,self._activeBorderColor)
-      fill_rect(self._x+self._borderWidth,self._y+self._borderWidth,self._width-self._borderWidth*2,self._height-self._borderWidth*2,self._activeFillColor)
-      draw_string(self._text,self._x+(self._width-self._widthText)//2,self._y+1+(self._height-self._heightText)//2,self._activeTextColor,self._activeFillColor)
+      self._draw(self._activeBorderColor,self._activeFillColor,self._activeTextColor)
       self._activate=True
     else:
       self.display()
@@ -119,3 +105,11 @@ class GButton:
       if self._command!=None:
           self._command()
           return self._command
+
+  def _draw(self,borderColor,fillColor,textColor):
+    fill_rect(self._x,self._y,self._width,self._borderWidth,borderColor)
+    fill_rect(self._x,self._y,self._borderWidth,self._height,borderColor)
+    fill_rect(self._x+self._width-self._borderWidth,self._y+self._borderWidth,self._borderWidth,self._height-self._borderWidth,borderColor)
+    fill_rect(self._x+self._borderWidth,self._y+self._height-self._borderWidth,self._width-self._borderWidth,self._borderWidth,borderColor)
+    fill_rect(self._x+self._borderWidth,self._y+self._borderWidth,self._width-self._borderWidth*2,self._height-self._borderWidth*2,fillColor)
+    draw_string(self._text,self._x+((self._width-self._borderWidth*2)-len(self._text)*10)//2,self._y+(self._height-20)//2,textColor,fillColor)

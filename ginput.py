@@ -70,15 +70,11 @@ class GInput:
     self._clickedBorderColor=borderColor
     self._clickedFillColor=fillColor
     self._clickedTextColor=textColor
-  
+
   def display(self,state=True):
     if self._displayState!=state or self._activate:
       if state:
-        fill_rect(self._x,self._y,self._width,self._borderWidth,self._borderColor)
-        fill_rect(self._x,self._y,self._borderWidth,self._height,self._borderColor)
-        fill_rect(self._x+self._width-self._borderWidth,self._y+self._borderWidth,self._borderWidth,self._height-self._borderWidth,self._borderColor)
-        fill_rect(self._x+self._borderWidth,self._y+self._height-self._borderWidth,self._width-self._borderWidth,self._borderWidth,self._borderColor)
-        fill_rect(self._x+self._borderWidth,self._y+self._borderWidth,self._width-self._borderWidth*2,self._height-self._borderWidth*2,self._fillColor)
+        self._draw(self._borderColor, self._fillColor)
       else:
         fill_rect(self.x,self.y,self._width,self._height,(255,255,255))
       self._displayState=state
@@ -86,11 +82,7 @@ class GInput:
   def setActivate(self,state=True):
     if state!=self._activate:
       if state:
-        fill_rect(self._x,self._y,self._width,self._borderWidth,self._activeBorderColor)
-        fill_rect(self._x,self._y,self._borderWidth,self._height,self._activeBorderColor)
-        fill_rect(self._x+self._width-self._borderWidth,self._y+self._borderWidth,self._borderWidth,self._height-self._borderWidth,self._activeBorderColor)
-        fill_rect(self._x+self._borderWidth,self._y+self._height-self._borderWidth,self._width-self._borderWidth,self._borderWidth,self._activeBorderColor)
-        fill_rect(self._x+self._borderWidth,self._y+self._borderWidth,self._width-self._borderWidth*2,self._height-self._borderWidth*2,self._activeFillColor)
+        self._draw(self._activeBorderColor,self._activeFillColor)
         self._activate=True
       else:
         self.display()
@@ -100,11 +92,7 @@ class GInput:
     if self._activate:
       sleep(0.15)
       self._activate=False
-      fill_rect(self._x,self._y,self._width,self._borderWidth,self._clickedBorderColor)
-      fill_rect(self._x,self._y,self._borderWidth,self._height,self._clickedBorderColor)
-      fill_rect(self._x+self._width-self._borderWidth,self._y+self._borderWidth,self._borderWidth,self._height-self._borderWidth,self._clickedBorderColor)
-      fill_rect(self._x+self._borderWidth,self._y+self._height-self._borderWidth,self._width-self._borderWidth,self._borderWidth,self._clickedBorderColor)
-      fill_rect(self._x+self._borderWidth,self._y+self._borderWidth,self._width-self._borderWidth*2,self._height-self._borderWidth*2,self._clickedFillColor)
+      self._draw(self._clickedBorderColor,self._clickedFillColor)
       inputText=""
       numbers=[42,43,44,36,37,38,30,31,32]
       alpha=False
@@ -236,3 +224,10 @@ class GInput:
           sleep(0.15)
     self.setActivate()
     return(inputText)
+
+  def _draw(self,borderColor,fillColor):
+    fill_rect(self._x,self._y,self._width,self._borderWidth,borderColor)
+    fill_rect(self._x,self._y,self._borderWidth,self._height,borderColor)
+    fill_rect(self._x+self._width-self._borderWidth,self._y+self._borderWidth,self._borderWidth,self._height-self._borderWidth,borderColor)
+    fill_rect(self._x+self._borderWidth,self._y+self._height-self._borderWidth,self._width-self._borderWidth,self._borderWidth,borderColor)
+    fill_rect(self._x+self._borderWidth,self._y+self._borderWidth,self._width-self._borderWidth*2,self._height-self._borderWidth*2,fillColor)
