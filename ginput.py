@@ -3,7 +3,7 @@ from ion import keydown
 from time import sleep
 
 class GInput:
-  def __init__(self,x,y,width,height,borderWidth=1,borderColor=(0,0,0),fillColor=(0,0,255),textColor=(0,0,0)):
+  def __init__(self,x,y,width,height,borderWidth=1,placeholder="",placeholderColor=(127,127,127),borderColor=(0,0,0),fillColor=(0,0,255),textColor=(0,0,0)):
     self.setBorderWidth(borderWidth)
     self.setWidth(width)
     self.setHeight(height)
@@ -11,11 +11,13 @@ class GInput:
     self.setY(y)
     self.initActiveState()
     self.initClickedState()
+    self.setPlaceholder(placeholder)
 
     self._borderColor=borderColor
     self._fillColor=fillColor
     self._textColor=textColor
     self._displayState=False
+    self._placeholderColor=placeholderColor
     self._inputText=""
 
   def getInputText(self):
@@ -30,6 +32,10 @@ class GInput:
     return self._height
   def getBorderWidth(self):
     return self._borderWidth
+  def getPlaceholder(self):
+    return self._placeholder
+  def getPlaceholderColor(self):
+    return self._placeholderColor
 
   def setX(self, x):
     if x>=0 and x<=(320-self._width):
@@ -59,6 +65,16 @@ class GInput:
     if height<20+self._borderWidth*2:
       height=20+self._borderWidth*2
     self._height=height
+  
+  def setPlaceholder(self, placeholder):
+    if self._width<len(placeholder)*10+self._borderWidth*2:
+      l=floor((self._width-self._borderWidth)//10)
+      self._placeholder=placeholder[0:l]
+    else:
+      self._placeholder=placeholder
+
+  def setTextColor(self, textColor):
+    self._textColor=textColor
   
   def initActiveState(self,borderColor=(0,0,0),fillColor=(0,255,255),textColor=(0,0,0)):
     self._activeBorderColor=borderColor
@@ -231,3 +247,4 @@ class GInput:
     fill_rect(self._x+self._width-self._borderWidth,self._y+self._borderWidth,self._borderWidth,self._height-self._borderWidth,borderColor)
     fill_rect(self._x+self._borderWidth,self._y+self._height-self._borderWidth,self._width-self._borderWidth,self._borderWidth,borderColor)
     fill_rect(self._x+self._borderWidth,self._y+self._borderWidth,self._width-self._borderWidth*2,self._height-self._borderWidth*2,fillColor)
+    draw_string(self._placeholder,self._x+((self._width-self._borderWidth*2)-len(self._placeholder)*10)//2,self._y+(self._height-20)//2,self._placeholderColor,fillColor)
