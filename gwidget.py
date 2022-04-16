@@ -1,90 +1,90 @@
 from kandinsky import fill_rect
 
 class GWidget:
-  def __init__(self,x,y,width,height,borderWidth=1,borderColor=(0,0,0),fillColor=(0,0,255)):
-    self.setBorderWidth(borderWidth)
-    self.setWidth(width)
-    self.setHeight(height)
-    self.setX(x)
-    self.setY(y)
-    self.initActiveState()
-    
-    self._borderColor=borderColor
-    self._fillColor=fillColor
-    self._displayState=False
-
-  def getX(self):
-    return self._x
-  def getY(self):
-    return self._y
-  def getWidth(self):
-    return self._width
-  def getHeigt(self):
-    return self._height
-  def getBorderWidth(self):
-    return self._borderWidth
-
-  def setX(self, x):
-    if x>=0 and x<=(320-self._width):
-      self._x=x
-    else:
-      self._x=0
-
-  def setY(self, y):
-    if y>=0 and y<=(222-self._height):
-      self._y=y
-    else:
-      self._y=0
-
-  def setBorderWidth(self, borderWidth):
-    if borderWidth<1:
-      borderWidth=1
-    elif borderWidth>10:
-      borderWidth=10
-    self._borderWidth=borderWidth
-
-  def setWidth(self, width):
-    if width<self._borderWidth*2:
-      width=self._borderWidth*2
-    self._width=width
-
-  def setHeight(self, height):
-    if height<self._borderWidth*2:
-      height=self._borderWidth*2
-    self._height=height
-
-  def initActiveState(self,borderColor=(0,0,0),fillColor=(0,255,255)):
-    self._activeBorderColor=borderColor
-    self._activeFillColor=fillColor
-    self._activate=False
-
-  def setActivate(self,state=True):
-    if state!=self._activate:
-      if state:
-        self._draw(1)
-        self._activate=True
-      else:
-        self.display()
-        self._activate=False
-
-  def display(self,state=True):
-    if self._displayState!=state or self._activate:
-      if state:
-        self._draw(0)
-      else:
-        fill_rect(self.x,self.y,self._width,self._height,(255,255,255))
-      self._displayState=state
+ def __init__(self,x,y,w,h,bw=1,bc=(0,0,0),fc=(0,0,255)):
+  self.setBorderWidth(bw)
+  self.setWidth(w)
+  self.setHeight(h)
+  self.setX(x)
+  self.setY(y)
+  self.initActiveState()
   
-  def _draw(self,state):
-    if state in [0,1]: 
-      if state==0:
-        borderColor=self._borderColor
-        fillColor=self._fillColor
-      else:
-        borderColor=self._activeBorderColor
-        fillColor=self._activeFillColor
-      fill_rect(self._x,self._y,self._width,self._borderWidth,borderColor)
-      fill_rect(self._x,self._y,self._borderWidth,self._height,borderColor)
-      fill_rect(self._x+self._width-self._borderWidth,self._y+self._borderWidth,self._borderWidth,self._height-self._borderWidth,borderColor)
-      fill_rect(self._x+self._borderWidth,self._y+self._height-self._borderWidth,self._width-self._borderWidth,self._borderWidth,borderColor)
-      fill_rect(self._x+self._borderWidth,self._y+self._borderWidth,self._width-self._borderWidth*2,self._height-self._borderWidth*2,fillColor)
+  self._bc=bc
+  self._fc=fc
+  self._ds=False
+
+ def getX(self):
+  return self._x
+ def getY(self):
+  return self._y
+ def getWidth(self):
+  return self._w
+ def getHeigt(self):
+  return self._h
+ def getBorderWidth(self):
+  return self._bw
+
+ def setX(self,x):
+  if x>=0 and x<=(320-self._w):
+   self._x=x
+  else:
+   self._x=0
+
+ def setY(self,y):
+  if y>=0 and y<=(222-self._h):
+   self._y=y
+  else:
+   self._y=0
+
+ def setBorderWidth(self,bw):
+  if bw<1:
+   bw=1
+  elif bw>10:
+   bw=10
+  self._bw=bw
+
+ def setWidth(self,w):
+  if w<self._bw*2:
+   w=self._bw*2
+  self._w=w
+
+ def setHeight(self,h):
+  if h<self._bw*2:
+   h=self._bw*2
+  self._h=h
+
+ def initActiveState(self,bc=(0,0,0),fc=(0,255,255)):
+  self._abc=bc
+  self._afc=fc
+  self._a=False
+
+ def setActivate(self,s=True):
+  if s!=self._a:
+   if s:
+    self._draw(1)
+    self._a=True
+   else:
+    self.display()
+    self._a=False
+
+ def display(self,s=True):
+  if self._ds!=s or self._a:
+   if s:
+    self._draw(0)
+   else:
+    fill_rect(self.x,self.y,self._w,self._h,(255,255,255))
+   self._ds=s
+ 
+ def _draw(self,s):
+  if s in [0,1]: 
+   if s==0:
+    bc=self._bc
+    fc=self._fc
+   else:
+    bc=self._abc
+    fc=self._afc
+   fill_rect(self._x,self._y,self._w,self._bw,bc)
+   fill_rect(self._x,self._y,self._bw,self._h,bc)
+   fill_rect(self._x+self._w-self._bw,self._y+self._bw,self._bw,self._h-self._bw,bc)
+   fill_rect(self._x+self._bw,self._y+self._h-self._bw,self._w-self._bw,self._bw,bc)
+   fill_rect(self._x+self._bw,self._y+self._bw,self._w-self._bw*2,self._h-self._bw*2,fc)

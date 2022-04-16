@@ -1,172 +1,217 @@
 from kandinsky import fill_rect, draw_string
 from ion import keydown
 from time import sleep
-from gwidget import GWidget
 
-class GInput(GWidget):
-  def __init__(self,x,y,width,height,borderWidth=1,borderColor=(0,0,0),fillColor=(0,0,255),textColor=(0,0,0)):
-    super().__init__(x,y,width,height,borderWidth,borderColor,fillColor)
-    self.initClickedState()
-    self._textColor=textColor
-    self._inputText=""
+class GInput:
+ def __init__(self,x,y,w,h,ph="",bw=1,phc=(127,127,127),bc=(0,0,0),fc=(0,0,255),tc=(0,0,0)):
+  self.setBorderWidth(bw)
+  self.setWidth(w)
+  self.setHeight(h)
+  self.setX(x)
+  self.setY(y)
+  self.initActiveState()
+  self.initClickedState()
+  self.setPlaceholder(ph)
 
-  def getInputText(self):
-    return self._inputText
+  self._bc=bc
+  self._fc=fc
+  self._tc=tc
+  self._ds=False
+  self._phc=phc
+  self._it=""
 
-  def setHeight(self, height):
-    if height<20+self._borderWidth*2:
-      height=20+self._borderWidth*2
-    self._height=height
+ def getInputText(self):
+  return self._it
+ def getX(self):
+  return self._x
+ def getY(self):
+  return self._y
+ def getWidth(self):
+  return self._w
+ def getHeigt(self):
+  return self._h
+ def getBorderWidth(self):
+  return self._bw
+ def getPlaceholder(self):
+  return self._ph
+ def getPlaceholderColor(self):
+  return self._phc
 
-  def initClickedState(self,borderColor=(255,0,0),fillColor=(0,255,255),textColor=(0,0,0)):
-    self._clickedBorderColor=borderColor
-    self._clickedFillColor=fillColor
-    self._clickedTextColor=textColor
-  
-  def setClicked(self,state=True):
-    if self._activate:
-      sleep(0.15)
-      self._activate=False
-      self._draw(2)
-      inputText=""
-      numbers=[42,43,44,36,37,38,30,31,32]
-      alpha=False
-      alphaLocked=False
-      shift=False
-      while not(keydown(4)):
-        char=""
-        oldInputText=inputText
-        if keydown(13):
-          if alphaLocked:
-            alphaLocked=False
-          elif alpha:
-            alphaLocked=True
-            alpha=False
-          else:
-            alpha=True
-          sleep(0.15)
-          continue
+ def setX(self,x):
+  if x>=0 and x<=(320-self._w):
+   self._x=x
+  else:
+   self._x=0
+ 
+ def setY(self,y):
+  if y>=0 and y<=(222-self._h):
+   self._y=y
+  else:
+   self._y=0
+ 
+ def setBorderWidth(self,bw):
+  if bw<1:
+   bw=1
+  elif bw>10:
+   bw=10
+  self._bw=bw
+ 
+ def setWidth(self,w):
+  if w<self._bw*2:
+   w=self._bw*2
+  self._w=w
 
-        elif keydown(12):
-          if shift:
-            shift=False
-          else:
-            shift=True
-          sleep(0.15)
-          continue
-        
-        elif keydown(17):
-          if inputText!="":
-            inputText=inputText[:len(inputText)-1]
+ def setHeight(self,h):
+  if h<20+self._bw*2:
+   h=20+self._bw*2
+  self._h=h
+ 
+ def setPlaceholder(self,ph):
+  if self._w<len(ph)*10+self._bw*2:
+   l=floor((self._w-self._bw)//10)
+   self._ph=ph[0:l]
+  else:
+   self._ph=ph
 
-        else: 
-          for number in numbers:
-            if keydown(number):
-              if alpha or alphaLocked:
-                if number==42:
-                  char="w"
-                elif number==43:
-                  char="x"
-                elif number==44:
-                  char="y"
-                elif number==36:
-                  char="r"
-                elif number==37:
-                  char="s"
-                elif number==38:
-                  char="t"
-                elif number==30:
-                  char="m"
-                elif number==31:
-                  char="n"
-                else:
-                  char="o"
-              else:
-                if number==42:
-                  char="1"
-                elif number==43:
-                  char="2"
-                elif number==44:
-                  char="3"
-                elif number==36:
-                  char="4"
-                elif number==37:
-                  char="5"
-                elif number==38:
-                  char="6"
-                elif number==30:
-                  char="7"
-                elif number==31:
-                  char="8"
-                else:
-                  char="9"
-              break
-          else:
-            if keydown(48):
-              char="0"
-            elif keydown(18):
-              char="a"
-            elif keydown(19):
-              char="b"
-            elif keydown(20):
-              char="c"
-            elif keydown(21):
-              char="d"
-            elif keydown(22):
-              char="e"
-            elif keydown(23):
-              char="f"
-            elif keydown(24):
-              char="g"
-            elif keydown(25):
-              char="h"
-            elif keydown(26):
-              char="i"
-            elif keydown(27):
-              char="j"
-            elif keydown(28):
-              char="k"
-            elif keydown(29):
-              char="l"
-            elif keydown(33):
-              char="p"
-            elif keydown(34):
-              char="q"
-            elif keydown(39):
-              char="u"
-            elif keydown(40):
-              char="v"
-            elif keydown(45):
-              char="z"
-            elif keydown(46):
-              char=" "
+ def setTextColor(self,tc):
+  self._tc=tc
+ 
+ def initActiveState(self,bc=(0,0,0),fc=(0,255,255),tc=(0,0,0)):
+  self._abc=bc
+  self._afc=fc
+  self._atc=tc
+  self._a=False
 
-          if shift:
-            char=char.upper()
-          inputText+=char
-          char=""
+ def initClickedState(self,bc=(255,0,0),fc=(0,255,255),tc=(0,0,0)):
+  self._cbc=bc
+  self._cfc=fc
+  self._ctc=tc
 
-        if inputText!=oldInputText:
-          if alpha:
-            alpha=False
-          fill_rect(self._x+self._borderWidth,self._y+self._borderWidth,self._width-self._borderWidth*2,self._height-self._borderWidth*2,self._activeFillColor)
-          if len(inputText)*10>=self._width:
-            displayText=inputText[:(self._width//10)-1]
-          else:
-            displayText=inputText
-          textWidth=len(displayText)*10
-          draw_string(displayText,self._x+(self._width-textWidth)//2,self._y+(self._height-15)//2,self._clickedTextColor,self._clickedFillColor)
-          sleep(0.15)
-    self.setActivate()
-    return(inputText)
+ def display(self,s=True):
+  if self._ds!=s or self._a:
+   if s:
+    self._draw(self._bc, self._fc)
+   else:
+    fill_rect(self.x,self.y,self._w,self._h,(255,255,255))
+   self._ds=s
 
-  def _draw(self,state):
-    if state in [0,1,2]: 
-      if state==2:
-        fill_rect(self._x,self._y,self._width,self._borderWidth,self._clickedBorderColor)
-        fill_rect(self._x,self._y,self._borderWidth,self._height,self._clickedBorderColor)
-        fill_rect(self._x+self._width-self._borderWidth,self._y+self._borderWidth,self._borderWidth,self._height-self._borderWidth,self._clickedBorderColor)
-        fill_rect(self._x+self._borderWidth,self._y+self._height-self._borderWidth,self._width-self._borderWidth,self._borderWidth,self._clickedBorderColor)
-        fill_rect(self._x+self._borderWidth,self._y+self._borderWidth,self._width-self._borderWidth*2,self._height-self._borderWidth*2,self._clickedFillColor)
-      else:
-        super()._draw(state)
+ def setActivate(self,s=True):
+  if s!=self._a:
+   if s:
+    self._draw(self._abc,self._afc)
+    self._a=True
+   else:
+    self.display()
+    self._a=False
+ 
+ def setClicked(self,s=True):
+  if self._a:
+   sleep(0.15)
+   self._a=False
+   self._draw(self._cbc,self._cfc)
+   it=""
+   n=[42,43,44,36,37,38,30,31,32]
+   a=False
+   al=False
+   s=False
+   while not(keydown(4)):
+    c=""
+    oit=it
+    if keydown(13):
+     if al:
+      al=False
+     elif a:
+      al=True
+      a=False
+     else:
+      a=True
+     sleep(0.15)
+     continue
+
+    elif keydown(12):
+     if s:
+      s=False
+     else:
+      s=True
+     sleep(0.15)
+     continue
+    
+    elif keydown(17):
+     if it!="":
+      it=it[:len(it)-1]
+
+    else: 
+     for ni in n:
+      if keydown(ni):
+       if a or al:
+        if ni==42:c="w"
+        elif ni==43:c="x"
+        elif ni==44:c="y"
+        elif ni==36:c="r"
+        elif ni==37:c="s"
+        elif ni==38:c="t"
+        elif ni==30:c="m"
+        elif ni==31:c="n"
+        else:c="o"
+       else:
+        if ni==42:c="1"
+        elif ni==43:c="2"
+        elif ni==44:c="3"
+        elif ni==36:c="4"
+        elif ni==37:c="5"
+        elif ni==38:c="6"
+        elif ni==30:c="7"
+        elif ni==31:c="8"
+        else:c="9"
+       break
+     else:
+      if keydown(48):c="0"
+      elif keydown(18):c="a"
+      elif keydown(19):c="b"
+      elif keydown(20):c="c"
+      elif keydown(21):c="d"
+      elif keydown(22):c="e"
+      elif keydown(23):c="f"
+      elif keydown(24):c="g"
+      elif keydown(25):c="h"
+      elif keydown(26):c="i"
+      elif keydown(27):c="j"
+      elif keydown(28):c="k"
+      elif keydown(29):c="l"
+      elif keydown(33):c="p"
+      elif keydown(34):c="q"
+      elif keydown(39):c="u"
+      elif keydown(40):c="v"
+      elif keydown(45):c="z"
+      elif keydown(46):c=" "
+
+     if s:
+      c=c.upper()
+     it+=c
+     c=""
+
+    if it!=oit:
+     if a:
+      a=False
+     fill_rect(self._x+self._bw,self._y+self._bw,self._w-self._bw*2,self._h-self._bw*2,self._afc)
+     if len(it)*10>=self._w:
+      dt=it[:(self._w//10)-1]
+     else:
+      dt=it
+     tw=len(dt)*10
+     draw_string(dt,self._x+(self._w-tw)//2,self._y+(self._h-15)//2,self._ctc,self._cfc)
+     sleep(0.15)
+   self.setActivate()
+   if it!="":
+    self._it=it
+   return(it)
+  else:
+   return(None)
+
+ def _draw(self,bc,fc):
+  fill_rect(self._x,self._y,self._w,self._bw,bc)
+  fill_rect(self._x,self._y,self._bw,self._h,bc)
+  fill_rect(self._x+self._w-self._bw,self._y+self._bw,self._bw,self._h-self._bw,bc)
+  fill_rect(self._x+self._bw,self._y+self._h-self._bw,self._w-self._bw,self._bw,bc)
+  fill_rect(self._x+self._bw,self._y+self._bw,self._w-self._bw*2,self._h-self._bw*2,fc)
+  draw_string(self._ph,self._x+((self._w-self._bw*2)-len(self._ph)*10)//2,self._y+(self._h-15)//2,self._phc,fc)
